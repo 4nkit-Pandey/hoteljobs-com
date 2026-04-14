@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply font-body bg-cream-100 text-charcoal-800 dark:bg-charcoal-950 dark:text-gray-100 transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gold-500 hover:bg-gold-600 text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-200 shadow-gold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .btn-secondary {
+    @apply bg-maroon-600 hover:bg-maroon-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+  }
+  .btn-outline {
+    @apply border-2 border-gold-500 text-gold-600 hover:bg-gold-500 hover:text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-200;
+  }
+  .btn-ghost {
+    @apply text-charcoal-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-charcoal-800 font-medium px-4 py-2 rounded-lg transition-all duration-200;
+  }
+  .card {
+    @apply bg-white dark:bg-charcoal-800 rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-gray-100 dark:border-charcoal-700;
+  }
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-charcoal-700 bg-white dark:bg-charcoal-800 text-charcoal-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all duration-200 placeholder-gray-400;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+  .badge-gold { @apply badge bg-gold-100 text-gold-700 dark:bg-gold-900/30 dark:text-gold-400; }
+  .badge-maroon { @apply badge bg-maroon-100 text-maroon-700 dark:bg-maroon-900/30 dark:text-maroon-400; }
+  .badge-green { @apply badge bg-green-100 text-green-700; }
+  .badge-blue { @apply badge bg-blue-100 text-blue-700; }
+  .section-title {
+    @apply font-display text-3xl md:text-4xl font-bold text-charcoal-900 dark:text-white;
+  }
+  .skeleton {
+    @apply bg-gray-200 dark:bg-charcoal-700 rounded-xl animate-pulse;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-gold-500 to-maroon-600 bg-clip-text text-transparent;
+  }
+  .glass {
+    @apply bg-white/80 dark:bg-charcoal-800/80 backdrop-blur-md;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+}
