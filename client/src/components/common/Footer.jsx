@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { GiCook } from 'react-icons/gi'
-import { FiMail, FiPhone, FiMapPin, FiTwitter, FiLinkedin, FiFacebook, FiInstagram } from 'react-icons/fi'
+import { FiMail, FiMapPin, FiTwitter, FiLinkedin, FiFacebook, FiInstagram } from 'react-icons/fi'
 
 export default function Footer() {
   return (
@@ -47,8 +47,7 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2"><FiMail size={14} className="text-gold-400" /> support@hoteljobs.com</li>
-              <li className="flex items-center gap-2"><FiPhone size={14} className="text-gold-400" /> +91 98765 43210</li>
-              <li className="flex items-start gap-2"><FiMapPin size={14} className="text-gold-400 mt-0.5" /> <span>Level 5, Phoenix Mall,<br />Mumbai, Maharashtra 400001</span></li>
+              <li className="flex items-start gap-2"><FiMapPin size={14} className="text-gold-400 mt-0.5" /> <span>Delhi, India</span></li>
             </ul>
             <div className="mt-4 p-3 bg-charcoal-800 rounded-xl">
               <p className="text-xs text-gray-400 mb-2">Subscribe to job alerts</p>

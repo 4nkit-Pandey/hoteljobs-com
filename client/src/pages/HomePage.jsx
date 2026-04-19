@@ -2,12 +2,13 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { FiSearch, FiMapPin, FiBriefcase, FiArrowRight, FiTrendingUp, FiUsers, FiStar, FiZap, FiX, FiChevronRight } from 'react-icons/fi'
-import { GiCook, GiBroom, GiSecurityGate, GiElectric } from 'react-icons/gi'
+import { GiBroom, GiSecurityGate } from 'react-icons/gi'
 import { MdHotel, MdRestaurant, MdSpa, MdAccountBalance, MdBuild, MdLocalGroceryStore, MdSell, MdCampaign, MdPeople } from 'react-icons/md'
 import { RiKnifeLine } from 'react-icons/ri'
 import JobCard from '../components/jobs/JobCard'
 import SkeletonLoader from '../components/common/SkeletonLoader'
 import api from '../services/api'
+import toast from 'react-hot-toast'
 
 // Department → job position mapping
 const DEPT_JOBS = {
@@ -95,18 +96,138 @@ const CATEGORIES = [
   { icon: MdLocalGroceryStore, label: 'Purchase', color: 'from-lime-400 to-green-600' },
   { icon: MdPeople, label: 'Daily Basis / Casual', color: 'from-rose-400 to-red-600' },
   { icon: MdRestaurant, label: 'Service', color: 'from-sky-400 to-blue-600' },
-  { icon: GiCook, label: 'Cook', color: 'from-amber-400 to-orange-600' },
   { icon: GiBroom, label: 'Housekeeping', color: 'from-cyan-400 to-blue-500' },
-  { icon: GiElectric, label: 'Electrician', color: 'from-yellow-400 to-yellow-600' },
   { icon: GiSecurityGate, label: 'Security', color: 'from-red-600 to-rose-800' },
   { icon: MdSpa, label: 'Spa & Wellness', color: 'from-pink-300 to-rose-500' },
 ]
 
-const TESTIMONIALS = [
-  { name: 'Rahul Sharma', role: 'Executive Chef', company: 'Taj Hotels', text: 'Found my dream job at Taj Hotels within 2 weeks of signing up. The platform understood exactly what I was looking for.', rating: 5, avatar: '👨‍🍳' },
-  { name: 'Priya Patel', role: 'Hotel Manager', company: 'Marriott India', text: 'As a recruiter, I filled 8 positions in one month. The quality of candidates on HotelJobs.com is exceptional.', rating: 5, avatar: '👩‍💼' },
-  { name: 'Vikram Singh', role: 'F&B Manager', company: 'Oberoi Hotels', text: 'Switched from a 5-star in Jaipur to an even better role in Goa. Salary jumped 40%. Highly recommended!', rating: 5, avatar: '👨‍💼' },
-]
+
+function ReviewSection() {
+  const [reviews, setReviews] = useState([])
+  const [form, setForm] = useState({ name: '', role: '', text: '', rating: 5 })
+  const [submitted, setSubmitted] = useState(false)
+  const [hoveredStar, setHoveredStar] = useState(0)
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!form.name.trim() || !form.text.trim()) {
+      toast.error('Please fill in your name and review.')
+      return
+    }
+    const newReview = { ...form, avatar: '👤', id: Date.now() }
+    setReviews(prev => [newReview, ...prev])
+    setForm({ name: '', role: '', text: '', rating: 5 })
+    setSubmitted(true)
+    toast.success('Thank you for your review! 🌟')
+    setTimeout(() => setSubmitted(false), 3000)
+  }
+
+  return (
+    <section className="py-16 px-4 bg-gradient-to-br from-charcoal-900 to-maroon-950">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-white">Success Stories</h2>
+          <p className="text-gray-400 mt-2">Share your experience with HotelJobs.com</p>
+        </div>
+
+        {/* Submit Review Form */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="max-w-2xl mx-auto mb-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+            <FiStar className="text-gold-400" size={18} /> Leave a Review
+          </h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Your Name *</label>
+                <input
+                  value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="e.g. Ramesh Kumar"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Role / Designation</label>
+                <input
+                  value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+                  placeholder="e.g. F&B Manager"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Your Review *</label>
+              <textarea
+                value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))}
+                placeholder="Share your experience finding a job or hiring through HotelJobs.com..."
+                rows={3}
+                className="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold-400 transition-colors resize-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-2">Rating</label>
+              <div className="flex gap-1">
+                {[1,2,3,4,5].map(star => (
+                  <button key={star} type="button"
+                    onMouseEnter={() => setHoveredStar(star)}
+                    onMouseLeave={() => setHoveredStar(0)}
+                    onClick={() => setForm(f => ({ ...f, rating: star }))}
+                    className="transition-transform hover:scale-110"
+                  >
+                    <FiStar size={24}
+                      className={`transition-colors ${
+                        star <= (hoveredStar || form.rating) ? 'text-gold-400 fill-gold-400' : 'text-gray-600'
+                      }`}
+                      fill={star <= (hoveredStar || form.rating) ? 'currentColor' : 'none'}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button type="submit"
+              className="btn-primary w-full flex items-center justify-center gap-2 text-sm"
+            >
+              <FiStar size={14} /> Submit Review
+            </button>
+          </form>
+        </motion.div>
+
+        {/* Submitted Reviews */}
+        {reviews.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.map((r, i) => (
+              <motion.div key={r.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-maroon-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    {r.name[0]?.toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white text-sm">{r.name}</p>
+                    {r.role && <p className="text-xs text-gold-400">{r.role}</p>}
+                  </div>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed">"{r.text}"</p>
+                <div className="flex mt-4 gap-0.5">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <FiStar key={j} size={13}
+                      className={j < r.rating ? 'text-gold-400' : 'text-gray-600'}
+                      fill={j < r.rating ? 'currentColor' : 'none'}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {reviews.length === 0 && (
+          <p className="text-center text-gray-500 text-sm">Be the first to share your success story!</p>
+        )}
+      </div>
+    </section>
+  )
+}
 
 function AnimatedCounter({ target, suffix = '' }) {
   const [count, setCount] = useState(0)
@@ -338,33 +459,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-16 px-4 bg-gradient-to-br from-charcoal-900 to-maroon-950">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white">Success Stories</h2>
-            <p className="text-gray-400 mt-2">Hear from people who found their dream jobs</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">{t.avatar}</span>
-                  <div>
-                    <p className="font-semibold text-white">{t.name}</p>
-                    <p className="text-xs text-gold-400">{t.role} · {t.company}</p>
-                  </div>
-                </div>
-                <p className="text-gray-300 text-sm leading-relaxed">"{t.text}"</p>
-                <div className="flex mt-4">
-                  {Array.from({ length: t.rating }).map((_, j) => <FiStar key={j} size={14} className="text-gold-400 fill-gold-400" />)}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Reviews Section */}
+      <ReviewSection />
 
       {/* CTA */}
       <section className="py-16 px-4 bg-gradient-to-r from-gold-500 to-gold-600">
