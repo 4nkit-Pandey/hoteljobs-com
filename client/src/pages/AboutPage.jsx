@@ -3,12 +3,6 @@ import { FiTarget, FiHeart, FiTrendingUp, FiUsers, FiStar, FiCheckCircle } from 
 import { GiCook } from 'react-icons/gi'
 import { Link } from 'react-router-dom'
 
-const TEAM = [
-  { name: 'Arjun Mehta', role: 'CEO & Co-Founder', emoji: '👨‍💼', bio: 'Former GM at Taj Hotels with 15 years in hospitality.' },
-  { name: 'Priya Kapoor', role: 'CTO & Co-Founder', emoji: '👩‍💻', bio: 'Built tech for OYO and MakeMyTrip before co-founding HotelJobs.' },
-  { name: 'Rahul Das', role: 'Head of Product', emoji: '👨‍🎨', bio: 'UX designer passionate about creating seamless job-seeker experiences.' },
-  { name: 'Sneha Iyer', role: 'VP of Partnerships', emoji: '👩‍💼', bio: 'Forged relationships with 500+ hotel brands across India.' },
-]
 
 const VALUES = [
   { icon: FiTarget, title: 'Purpose-Driven', desc: 'We serve a specific industry because we know it inside-out. Specialization creates better outcomes.' },
@@ -75,26 +69,6 @@ export default function AboutPage() {
                   <h3 className="font-semibold text-charcoal-800 dark:text-white mb-1">{v.title}</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{v.desc}</p>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="section-title">Meet the Team</h2>
-            <p className="text-gray-500 mt-2">Hospitality industry veterans and tech builders</p>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-5">
-            {TEAM.map((m, i) => (
-              <motion.div key={m.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="card p-5 text-center">
-                <span className="text-4xl block mb-3">{m.emoji}</span>
-                <h3 className="font-semibold text-charcoal-800 dark:text-white">{m.name}</h3>
-                <p className="text-xs text-gold-600 dark:text-gold-400 mb-2">{m.role}</p>
-                <p className="text-xs text-gray-500 leading-relaxed">{m.bio}</p>
               </motion.div>
             ))}
           </div>

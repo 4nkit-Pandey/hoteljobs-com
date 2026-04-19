@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { FiMail, FiPhone, FiMapPin, FiSend, FiMessageCircle, FiClock } from 'react-icons/fi'
+import { FiMail, FiMapPin, FiSend, FiMessageCircle, FiClock } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 
 export default function ContactPage() {
@@ -37,8 +37,7 @@ export default function ContactPage() {
             <div className="space-y-5">
               {[
                 { icon: FiMail, title: 'Email Us', val: 'support@hoteljobs.com', sub: 'For general inquiries' },
-                { icon: FiPhone, title: 'Call Us', val: '+91 98765 43210', sub: 'Mon–Fri, 9AM–6PM IST' },
-                { icon: FiMapPin, title: 'Office', val: 'Level 5, Phoenix Mall, LBS Marg', sub: 'Mumbai, Maharashtra 400001' },
+                { icon: FiMapPin, title: 'Office', val: 'Delhi, India', sub: '' },
                 { icon: FiClock, title: 'Support Hours', val: 'Mon – Sat: 9AM – 7PM', sub: 'Sunday: 10AM – 4PM' },
               ].map(item => (
                 <motion.div key={item.title} initial={{ opacity: 0, x: -15 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="flex gap-4 items-start">
