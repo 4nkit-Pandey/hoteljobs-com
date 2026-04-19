@@ -1,22 +1,105 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, useInView } from 'framer-motion'
-import { FiSearch, FiMapPin, FiBriefcase, FiArrowRight, FiTrendingUp, FiUsers, FiStar, FiZap } from 'react-icons/fi'
-import { GiCook, GiWineGlass, GiBroom } from 'react-icons/gi'
-import { MdHotel, MdRestaurant, MdSpa } from 'react-icons/md'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { FiSearch, FiMapPin, FiBriefcase, FiArrowRight, FiTrendingUp, FiUsers, FiStar, FiZap, FiX, FiChevronRight } from 'react-icons/fi'
+import { GiCook, GiBroom, GiSecurityGate, GiElectric } from 'react-icons/gi'
+import { MdHotel, MdRestaurant, MdSpa, MdAccountBalance, MdBuild, MdLocalGroceryStore, MdSell, MdCampaign, MdPeople } from 'react-icons/md'
+import { RiKnifeLine } from 'react-icons/ri'
 import JobCard from '../components/jobs/JobCard'
 import SkeletonLoader from '../components/common/SkeletonLoader'
 import api from '../services/api'
 
+// Department → job position mapping
+const DEPT_JOBS = {
+  'F&B Service': [
+    'F&B Director', 'Corporate F&B Manager', 'F&B Manager', 'Asst. F&B Manager',
+    'Restaurant Manager', 'Asst. Restaurant Manager', 'F&B Executive', 'Senior Captain',
+    'Captain', 'Trainee Captain', 'Sr. Steward', 'Steward', 'Asst. Steward',
+    'Trainee Steward', 'Job Trainee', 'G.R.E.', 'Asst. G.R.E.', 'Trainee G.R.E.',
+  ],
+  'F&B Production': [
+    'Corporate Chef', 'Executive Chef', 'Sous Chef', 'C.D.P.',
+    'Commis', 'Helper', 'Job Trainee', 'Kitchen Stewarding',
+  ],
+  'Front Office': [
+    'Corporate Manager', 'Front Office Manager', 'Asst. Front Office Manager',
+    'Sr. Receptionist', 'Receptionist', 'Asst. Receptionist', 'Job Trainee',
+    'Bell Boy', 'Lobby Manager', 'Asst. Lobby Manager',
+    'Room Sales Manager', 'Asst. Room Sales Manager',
+  ],
+  'Hotel Management': [
+    'General Manager', 'Hotel Manager', 'Operations Manager',
+    'Revenue Manager', 'Guest Relations Manager', 'Banquet Manager',
+    'Event Manager', 'Hospitality Executive',
+  ],
+  'Accounts': [
+    'C.A.', 'Revenue Manager', 'Account Manager', 'Asst. Account Manager',
+    'Account Executive', 'Purchase Manager', 'Asst. Purchase Manager',
+    'Purchase Executive', 'Cashier',
+  ],
+  'Maintenance': [
+    'Maintenance Manager', 'Engineer', 'Plumber', 'Mason',
+    'Painter', 'Helper', 'Job Trainee',
+  ],
+  'Sales': [
+    'Sales Manager', 'Asst. Sales Manager', 'Sales Executive',
+    'Sales Coordinator', 'Corporate Sales Manager', 'Key Account Manager',
+  ],
+  'Marketing': [
+    'Marketing Manager', 'Asst. Marketing Manager', 'Marketing Executive',
+    'Digital Marketing Executive', 'Brand Manager', 'PR Manager',
+  ],
+  'Purchase': [
+    'Purchase Manager', 'Asst. Purchase Manager', 'Purchase Executive',
+    'Store Manager', 'Store Keeper', 'Inventory Executive',
+  ],
+  'Daily Basis / Casual': [
+    'Daily Wage Worker', 'Casual Staff', 'Part-Time Helper',
+    'Temporary Cook', 'Housekeeping Casual', 'Event Casual Staff',
+  ],
+  'Service': [
+    'Service Manager', 'Service Executive', 'Service Supervisor',
+    'Guest Service Associate', 'Customer Service Executive',
+  ],
+  'Cook': [
+    'Head Cook', 'Cook', 'Assistant Cook', 'Breakfast Cook',
+    'Tandoor Cook', 'Chinese Cook', 'Continental Cook', 'Helper',
+  ],
+  'Housekeeping': [
+    'Housekeeping Manager', 'Housekeeping Executive', 'Supervisor',
+    'Room Attendant', 'Job Trainee', 'Gardener',
+  ],
+  'Electrician': [
+    'Chief Electrician', 'Electrician', 'Asst. Electrician',
+    'AC Technician', 'Helper', 'Job Trainee',
+  ],
+  'Security': [
+    'C.S.O.', 'Security Manager', 'Security Supervisor', 'Security Guard',
+    'Doorman', 'P.S.O.', 'Bouncer', 'Gunman',
+  ],
+  'Spa & Wellness': [
+    'Spa Manager', 'Spa Therapist', 'Massage Therapist',
+    'Beauty Therapist', 'Yoga Instructor', 'Wellness Executive',
+  ],
+}
+
 const CATEGORIES = [
-  { icon: GiCook, label: 'Chef & Kitchen', count: 142, color: 'from-orange-400 to-red-500', query: 'Chef' },
-  { icon: MdHotel, label: 'Hotel Management', count: 89, color: 'from-gold-400 to-gold-600', query: 'Hotel Manager' },
-  { icon: MdRestaurant, label: 'F&B Service', count: 215, color: 'from-green-400 to-emerald-600', query: 'Waiter' },
-  { icon: GiBroom, label: 'Housekeeping', count: 76, color: 'from-blue-400 to-cyan-600', query: 'Housekeeping' },
-  { icon: FiBriefcase, label: 'Front Desk', count: 98, color: 'from-purple-400 to-violet-600', query: 'Front Desk' },
-  { icon: GiWineGlass, label: 'Bartender', count: 54, color: 'from-yellow-400 to-amber-600', query: 'Bartender' },
-  { icon: MdSpa, label: 'Spa & Wellness', count: 37, color: 'from-pink-400 to-rose-600', query: 'Spa Therapist' },
-  { icon: FiStar, label: 'Concierge', count: 45, color: 'from-maroon-400 to-maroon-600', query: 'Concierge' },
+  { icon: MdRestaurant, label: 'F&B Service', color: 'from-green-400 to-emerald-600' },
+  { icon: RiKnifeLine, label: 'F&B Production', color: 'from-orange-400 to-red-500' },
+  { icon: FiBriefcase, label: 'Front Office', color: 'from-purple-400 to-violet-600' },
+  { icon: MdHotel, label: 'Hotel Management', color: 'from-yellow-500 to-amber-600' },
+  { icon: MdAccountBalance, label: 'Accounts', color: 'from-blue-400 to-indigo-600' },
+  { icon: MdBuild, label: 'Maintenance', color: 'from-slate-400 to-slate-600' },
+  { icon: MdSell, label: 'Sales', color: 'from-teal-400 to-cyan-600' },
+  { icon: MdCampaign, label: 'Marketing', color: 'from-pink-400 to-fuchsia-600' },
+  { icon: MdLocalGroceryStore, label: 'Purchase', color: 'from-lime-400 to-green-600' },
+  { icon: MdPeople, label: 'Daily Basis / Casual', color: 'from-rose-400 to-red-600' },
+  { icon: MdRestaurant, label: 'Service', color: 'from-sky-400 to-blue-600' },
+  { icon: GiCook, label: 'Cook', color: 'from-amber-400 to-orange-600' },
+  { icon: GiBroom, label: 'Housekeeping', color: 'from-cyan-400 to-blue-500' },
+  { icon: GiElectric, label: 'Electrician', color: 'from-yellow-400 to-yellow-600' },
+  { icon: GiSecurityGate, label: 'Security', color: 'from-red-600 to-rose-800' },
+  { icon: MdSpa, label: 'Spa & Wellness', color: 'from-pink-300 to-rose-500' },
 ]
 
 const TESTIMONIALS = [
@@ -50,6 +133,7 @@ export default function HomePage() {
   const [featuredJobs, setFeaturedJobs] = useState([])
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedDept, setSelectedDept] = useState(null)
 
   useEffect(() => {
     Promise.all([
@@ -146,22 +230,75 @@ export default function HomePage() {
       <section className="py-16 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="section-title">Browse by Category</h2>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Find jobs in your area of expertise</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Select a department to explore job positions</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {CATEGORIES.map((cat, i) => (
-            <motion.button key={cat.label} onClick={() => navigate(`/jobs?search=${cat.query}`)}
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+            <motion.button key={cat.label} onClick={() => setSelectedDept(cat.label)}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
               whileHover={{ y: -4 }} className="group card p-5 text-center cursor-pointer">
               <div className={`w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg`}>
                 <cat.icon size={26} className="text-white" />
               </div>
-              <h3 className="font-semibold text-sm text-charcoal-800 dark:text-white">{cat.label}</h3>
-              <p className="text-xs text-gray-500 mt-1">{cat.count} jobs</p>
+              <h3 className="font-semibold text-sm text-charcoal-800 dark:text-white leading-tight">{cat.label}</h3>
+              <p className="text-xs text-gold-500 mt-1.5 flex items-center justify-center gap-1">View positions <FiChevronRight size={10} /></p>
             </motion.button>
           ))}
         </div>
       </section>
+
+      {/* Department Jobs Modal */}
+      <AnimatePresence>
+        {selectedDept && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedDept(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', damping: 20 }}
+              onClick={e => e.stopPropagation()}
+              className="card p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h3 className="font-display text-xl font-bold text-charcoal-800 dark:text-white">{selectedDept}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Select a position to search jobs</p>
+                </div>
+                <button onClick={() => setSelectedDept(null)} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-charcoal-700 transition-colors">
+                  <FiX size={18} className="text-gray-500" />
+                </button>
+              </div>
+              <div className="grid grid-cols-1 gap-2">
+                {(DEPT_JOBS[selectedDept] || []).map((position, idx) => (
+                  <motion.button
+                    key={position}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.03 }}
+                    onClick={() => { navigate(`/jobs?search=${encodeURIComponent(position)}`); setSelectedDept(null) }}
+                    className="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-100 dark:border-charcoal-700 hover:border-gold-400 hover:bg-gold-50 dark:hover:bg-gold-900/10 transition-all group text-left"
+                  >
+                    <span className="text-sm font-medium text-charcoal-700 dark:text-gray-200 group-hover:text-gold-600">{position}</span>
+                    <FiChevronRight size={14} className="text-gray-400 group-hover:text-gold-500 transition-colors flex-shrink-0" />
+                  </motion.button>
+                ))}
+              </div>
+              <button
+                onClick={() => { navigate(`/jobs?search=${encodeURIComponent(selectedDept)}`); setSelectedDept(null) }}
+                className="btn-primary w-full mt-5 flex items-center justify-center gap-2"
+              >
+                <FiSearch size={14} /> View All {selectedDept} Jobs
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Featured Jobs */}
       <section className="py-16 px-4 bg-cream-50 dark:bg-charcoal-900/50">

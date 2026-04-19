@@ -8,12 +8,36 @@ import toast from 'react-hot-toast'
 import { useState } from 'react'
 
 const roleColors = {
-  'Chef': 'bg-orange-100 text-orange-700', 'Sous Chef': 'bg-amber-100 text-amber-700',
-  'Waiter': 'bg-blue-100 text-blue-700', 'Waitress': 'bg-purple-100 text-purple-700',
-  'Hotel Manager': 'bg-green-100 text-green-700', 'General Manager': 'bg-emerald-100 text-emerald-700',
-  'Housekeeping': 'bg-pink-100 text-pink-700', 'Front Desk': 'bg-cyan-100 text-cyan-700',
-  'Bartender': 'bg-yellow-100 text-yellow-700', 'Concierge': 'bg-indigo-100 text-indigo-700',
-  'F&B Manager': 'bg-red-100 text-red-700', 'Banquet Manager': 'bg-teal-100 text-teal-700',
+  // F&B Service
+  'F&B Director': 'bg-emerald-100 text-emerald-800', 'F&B Manager': 'bg-green-100 text-green-700',
+  'Corporate F&B Manager': 'bg-green-100 text-green-700', 'Asst. F&B Manager': 'bg-green-100 text-green-700',
+  'Senior Captain': 'bg-teal-100 text-teal-700', 'Captain': 'bg-teal-100 text-teal-700',
+  'Steward': 'bg-teal-50 text-teal-600', 'Asst. Steward': 'bg-teal-50 text-teal-600',
+  'G.R.E.': 'bg-cyan-100 text-cyan-700',
+  // F&B Production
+  'Executive Chef': 'bg-orange-100 text-orange-700', 'Corporate Chef': 'bg-orange-100 text-orange-800',
+  'Sous Chef': 'bg-amber-100 text-amber-700', 'C.D.P.': 'bg-amber-100 text-amber-600',
+  'Commis': 'bg-yellow-100 text-yellow-700', 'Kitchen Stewarding': 'bg-orange-50 text-orange-600',
+  // Front Office
+  'Front Office Manager': 'bg-purple-100 text-purple-700', 'Receptionist': 'bg-violet-100 text-violet-700',
+  'Bell Boy': 'bg-purple-50 text-purple-600', 'Lobby Manager': 'bg-indigo-100 text-indigo-700',
+  // Hotel Management
+  'General Manager': 'bg-yellow-100 text-yellow-800', 'Hotel Manager': 'bg-amber-100 text-amber-700',
+  'Banquet Manager': 'bg-yellow-50 text-yellow-700', 'Event Manager': 'bg-lime-100 text-lime-700',
+  'Hospitality Executive': 'bg-green-100 text-green-700',
+  // Accounts
+  'Revenue Manager': 'bg-blue-100 text-blue-700', 'Account Manager': 'bg-blue-100 text-blue-700',
+  'Cashier': 'bg-blue-50 text-blue-600', 'Purchase Manager': 'bg-indigo-100 text-indigo-700',
+  // Housekeeping
+  'Housekeeping Manager': 'bg-pink-100 text-pink-700', 'Housekeeping Executive': 'bg-pink-100 text-pink-700',
+  'Room Attendant': 'bg-pink-50 text-pink-600', 'Gardener': 'bg-lime-100 text-lime-700',
+  // Security
+  'C.S.O.': 'bg-red-100 text-red-800', 'Security Manager': 'bg-red-100 text-red-700',
+  'Security Guard': 'bg-red-50 text-red-600', 'Doorman': 'bg-rose-100 text-rose-700',
+  // Maintenance / Cook / Other
+  'Engineer': 'bg-slate-100 text-slate-700', 'Maintenance Manager': 'bg-slate-100 text-slate-700',
+  'Cook': 'bg-orange-100 text-orange-600', 'Head Cook': 'bg-orange-100 text-orange-700',
+  'Spa Manager': 'bg-pink-100 text-pink-700', 'Spa Therapist': 'bg-rose-100 text-rose-600',
 }
 
 function formatSalary(min, max) {

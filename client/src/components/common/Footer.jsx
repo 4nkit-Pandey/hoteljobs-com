@@ -28,7 +28,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Browse Jobs</h4>
             <ul className="space-y-2 text-sm">
-              {['Chef Jobs', 'Hotel Manager Jobs', 'Front Desk Jobs', 'Housekeeping Jobs', 'Bartender Jobs', 'F&B Manager Jobs'].map(l => (
+              {['Executive Chef Jobs', 'Hotel Manager Jobs', 'Front Office Jobs', 'Housekeeping Jobs', 'F&B Service Jobs', 'Security Jobs'].map(l => (
                 <li key={l}><Link to="/jobs" className="hover:text-gold-400 transition-colors">{l}</Link></li>
               ))}
             </ul>

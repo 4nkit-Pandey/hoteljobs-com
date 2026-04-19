@@ -9,10 +9,36 @@ const jobSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-    enum: ['Chef', 'Sous Chef', 'Waiter', 'Waitress', 'Hotel Manager', 'General Manager',
-           'Housekeeping', 'Front Desk', 'Receptionist', 'Bartender', 'Concierge',
-           'Room Service', 'F&B Manager', 'Kitchen Staff', 'Banquet Manager',
-           'Spa Therapist', 'Security', 'Maintenance', 'Event Manager', 'Hospitality Executive', 'Other']
+    enum: [
+      // F&B Service
+      'F&B Director', 'Corporate F&B Manager', 'F&B Manager', 'Asst. F&B Manager',
+      'Restaurant Manager', 'Asst. Restaurant Manager', 'F&B Executive', 'Senior Captain',
+      'Captain', 'Trainee Captain', 'Sr. Steward', 'Steward', 'Asst. Steward',
+      'Trainee Steward', 'G.R.E.', 'Asst. G.R.E.', 'Trainee G.R.E.',
+      // F&B Production
+      'Corporate Chef', 'Executive Chef', 'Sous Chef', 'C.D.P.', 'Commis', 'Kitchen Stewarding',
+      // Front Office
+      'Front Office Manager', 'Asst. Front Office Manager', 'Sr. Receptionist',
+      'Receptionist', 'Asst. Receptionist', 'Bell Boy', 'Lobby Manager',
+      'Asst. Lobby Manager', 'Room Sales Manager', 'Asst. Room Sales Manager',
+      // Hotel Management
+      'General Manager', 'Hotel Manager', 'Operations Manager',
+      'Guest Relations Manager', 'Banquet Manager', 'Event Manager', 'Hospitality Executive',
+      // Accounts
+      'C.A.', 'Revenue Manager', 'Account Manager', 'Asst. Account Manager',
+      'Account Executive', 'Purchase Manager', 'Asst. Purchase Manager', 'Purchase Executive', 'Cashier',
+      // Housekeeping
+      'Housekeeping Manager', 'Housekeeping Executive', 'Room Attendant', 'Gardener',
+      // Security
+      'C.S.O.', 'Security Manager', 'Security Supervisor', 'Security Guard', 'Doorman', 'P.S.O.', 'Bouncer', 'Gunman',
+      // Maintenance
+      'Maintenance Manager', 'Engineer', 'Plumber', 'Mason', 'Painter',
+      // Cook
+      'Head Cook', 'Cook', 'Assistant Cook', 'Breakfast Cook', 'Tandoor Cook',
+      // Other
+      'Spa Manager', 'Spa Therapist', 'Sales Manager', 'Marketing Manager',
+      'Helper', 'Job Trainee', 'Other',
+    ]
   },
   location: { type: String, required: true },
   city: { type: String, default: '' },
